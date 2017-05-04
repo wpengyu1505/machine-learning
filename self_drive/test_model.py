@@ -7,11 +7,12 @@ import time
 from directkeys import PressKey,ReleaseKey, W, A, S, D
 from alexnet import alexnet
 from getkeys import key_check
-from basic_setup import WIDTH, HEIGHT, REGION
+from basic_setup import WIDTH, HEIGHT, REGION, pre_process_image
 import random
 
-MODEL_NAME = 'autocar-alexnet.model'
+MODEL_NAME = 'autocar-0.001-alexnet-10-epochs.model'
 t_time = 0.09
+LR = 1e-3
 
 def straight():
     PressKey(W)
@@ -49,14 +50,13 @@ if __name__ == '__main__':
             screen = grab_screen(region=REGION)
             #print('loop took {} seconds'.format(time.time()-last_time))
             last_time = time.time()
-            screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-            screen = cv2.resize(screen, (WIDTH,HEIGHT))
+            screen = pre_process_image(screen)
 
             prediction = model.predict([screen.reshape(WIDTH,HEIGHT,1)])[0]
             print(prediction)
 
-            turn_thresh = .50
-            fwd_thresh = 0.50
+            turn_thresh = .70
+            fwd_thresh = 0.70
 
             if prediction[1] > fwd_thresh:
                 straight()

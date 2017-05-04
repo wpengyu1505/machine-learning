@@ -6,7 +6,7 @@ import cv2
 import time
 from getkeys import key_check
 import os
-from basic_setup import WIDTH, HEIGHT, REGION
+from basic_setup import WIDTH, HEIGHT, REGION, pre_process_image
 
 
 def keys_to_output(keys):
@@ -24,7 +24,6 @@ def keys_to_output(keys):
     else:
         output[1] = 1
     return output
-
 
 file_name = 'training_data.npy'
 
@@ -49,9 +48,7 @@ if __name__ == '__main__':
         if not paused:
             
             screen = grab_screen(region=REGION)
-            last_time = time.time()
-            screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-            screen = cv2.resize(screen, (WIDTH,HEIGHT))
+            screen = pre_process_image(screen)
 
             # resize to something a bit more acceptable for a CNN
             keys = key_check()
